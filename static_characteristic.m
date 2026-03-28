@@ -21,8 +21,8 @@ for i = 1:N
     for j = 1:N
         z = Z_jump_points(j);
         
-        [~, S_nl] = ode45(@(t, x) nonlinear_model(x,t,z,T_C,T_H,T_D,F_C,u,F_D,Tau_C,C,alpha), Ts, [V0; T0]);
-        [~, S_l] = ode45(@(t, x) linear_model(x,t,z,T_C,T_H,T_D,F_C,u,F_D,Tau_C,C,alpha), Ts, [H0; T0]);
+        [~, S_nl] = ode15s(@(t, x) nonlinear_model(x,t,z,T_C,T_H,T_D,F_C,u,F_D,Tau_C,C,alpha), Ts, [V0; T0]);
+        [~, S_l] = ode15s(@(t, x) linear_model(x,t,z,T_C,T_H,T_D,F_C,u,F_D,Tau_C,C,alpha), Ts, [H0; T0]);
         
         y_steady(i, j) = S_l(end, 1);
         y_steady_nonlinear(i, j) = sqrt(S_nl(end, 1) / C);
@@ -38,7 +38,7 @@ figure(1);
 surf(U1, U2, y_steady_nonlinear, 'FaceAlpha', 0.6, 'EdgeColor', 'none'); 
 hold on;
 surf(U1, U2, y_steady, 'FaceColor', 'r', 'FaceAlpha', 0.3, 'EdgeColor', 'r', 'EdgeAlpha', 0.2); 
-plot3(F_C, F_H, H0, 'k.', 'MarkerSize', 35);
+plot3(F_C, F_H, H0, 'r.', 'MarkerSize', 35);
 xlabel('$F_C$ [cm$^3$/s]', 'Interpreter', 'latex');
 ylabel('$F_H$ [cm$^3$/s]', 'Interpreter', 'latex');
 zlabel('$h$ [cm]', 'Interpreter', 'latex');
@@ -54,7 +54,7 @@ figure(2);
 surf(U1, U2, y_steady_2_nonlinear, 'FaceAlpha', 0.6, 'EdgeColor', 'none');
 hold on;
 surf(U1, U2, y_steady_2, 'FaceColor', 'r', 'FaceAlpha', 0.3, 'EdgeColor', 'r', 'EdgeAlpha', 0.2);
-plot3(F_C, F_H, T0, 'k.', 'MarkerSize', 35);
+plot3(F_C, F_H, T0, 'r.', 'MarkerSize', 35);
 xlabel('$F_C$ [cm$^3$/s]', 'Interpreter', 'latex');
 ylabel('$F_H$ [cm$^3$/s]', 'Interpreter', 'latex');
 zlabel('$T$ [$^\circ$C]', 'Interpreter', 'latex');

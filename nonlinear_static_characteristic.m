@@ -25,7 +25,7 @@ for i = 1:N
         f_c = FC_mesh(i,j);
         f_h = FH_mesh(i,j);
         
-        [t, S] = ode45(@(t, x) nonlinear_model(x,t,f_c,T_C,T_H,T_D,f_c,f_h,F_D,Tau_C,C,alpha), ...
+        [t, S] = ode15s(@(t, x) nonlinear_model(x,t,f_c,T_C,T_H,T_D,f_c,f_h,F_D,Tau_C,C,alpha), ...
                  [0, tmax], [V0; T0]);
         
         H_steady(i,j) = sqrt(S(end, 1) / C);
