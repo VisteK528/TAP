@@ -1,3 +1,5 @@
+close all;
+clear all;
 F_Cin=21; T_C=25; T_H=65; T_D=29;
 F_C=21; F_H=17; F_D=13;
 Tau_C=100; Tau=40; C=0.15; alpha=6;
@@ -38,5 +40,5 @@ y0 = 10;
 width = 1280;
 height = 720;
 set(gcf, 'position', [x0, y0, width, height]);
-name = "images/operating_point_nonlinear_model.png";
+name = "images/operating_point_nonlinear_model.pdf";
 exportgraphics(gcf, name, "Resolution", 200);

@@ -48,7 +48,7 @@ grid on; colorbar;
 x0 = 10; y0 = 10; width = 1000; height = 720;
 set(gcf, 'position', [x0, y0, width, height]);
 if ~exist('images', 'dir'), mkdir('images'); end
-exportgraphics(gcf, "images/static_char_h_nonlinear.png", "Resolution", 200);
+exportgraphics(gcf, "images/static_char_h_nonlinear.pdf", "Resolution", 200);
 
 figure(2);
 surf(FC_mesh, FH_mesh, T_steady, 'FaceAlpha', 0.8);
@@ -61,4 +61,4 @@ zlabel('$T$ [$^\circ$C]', 'Interpreter', 'latex');
 grid on; colorbar;
 
 set(gcf, 'position', [x0, y0, width, height]);
-exportgraphics(gcf, "images/operating_point_nonlinear_model.png", "Resolution", 200);
+exportgraphics(gcf, "images/static_char_T_nonlinear.pdf", "Resolution", 200);
