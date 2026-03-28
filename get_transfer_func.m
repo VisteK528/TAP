@@ -20,4 +20,4 @@ function [G]=get_transfer_func
     G = tf(sys);
     G.InputDelay = [100, 0, 0];
     G.OutputDelay = [0, 40];
-    ends
+end
