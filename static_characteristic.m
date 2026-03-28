@@ -47,7 +47,6 @@ grid on;
 
 x0 = 10; y0 = 10; width = 1000; height = 720;
 set(gcf, 'position', [x0, y0, width, height]);
-if ~exist('images', 'dir'), mkdir('images'); end
 exportgraphics(gcf, "images/comparison_h_linear_nonlinear.pdf", "ContentType", "vector");
 
 figure(2);

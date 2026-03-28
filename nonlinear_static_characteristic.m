@@ -45,7 +45,6 @@ grid on; colorbar;
 
 x0 = 10; y0 = 10; width = 1000; height = 720;
 set(gcf, 'position', [x0, y0, width, height]);
-if ~exist('images', 'dir'), mkdir('images'); end
 exportgraphics(gcf, "images/static_char_h_nonlinear.pdf", "Resolution", 200);
 
 figure(2);
