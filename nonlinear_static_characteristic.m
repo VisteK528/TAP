@@ -1,7 +1,6 @@
 clear all;
 close all;
 
-% --- Parameters (Operating Point Values) ---
 F_C_op = 21; 
 F_H_op = 17;
 F_D = 13;
@@ -32,7 +31,6 @@ for i = 1:N
         H_steady(i,j) = sqrt(S(end, 1) / C);
         T_steady(i,j) = S(end, 2);
     end
-    fprintf("Calculating: %d%%\n", round(i/N*100));
 end
 
 figure(1);
