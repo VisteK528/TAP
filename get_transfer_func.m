@@ -6,7 +6,7 @@ function [G]=get_transfer_func
     F_H0=17;
     F_D0=13;
     h0=72.25;
-    T_0=39.25;
+    T_0=39.35;
     C = 0.15;
     alpha = 6;
 
@@ -14,7 +14,6 @@ function [G]=get_transfer_func
     B = [1/(2*C*h0) 1/(2*C*h0) 1/(2*C*h0); (T_C-T_0)/(C*h0^2) (T_H-T_0)/(C*h0^2) (T_D-T_0)/(C*h0^2)];
     C = [1 0; 0 1];
     D = [0 0 0; 0 0 0];
-    
     sys = ss(A, B, C, D);
 
     G = tf(sys);

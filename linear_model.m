@@ -6,7 +6,7 @@ function [x]=linear_model(x,t,F_Cin,T_C,T_H,T_D,F_C,F_H,F_D, Tau_C,C,alpha)
     F_H0=17;
     F_D0=13;
     h0=72.25;
-    T0=39.25;
+    T0=39.35;
 
     h=x(1);
     T=x(2);

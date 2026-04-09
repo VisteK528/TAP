@@ -1,12 +1,7 @@
 clear all;
 close all;
 
-F_C_op = 21; 
-F_H_op = 17;
-F_D = 13;
-T_C = 25; T_H = 65; T_D = 29;
-C = 0.15; alpha = 6; Tau_C = 100;
-H0 = 72.25; V0 = C*H0^2; T0 = 39.25;
+model_config;
 
 Tp = 1.0;
 tmax = 5000; 

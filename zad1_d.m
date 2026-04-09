@@ -11,13 +11,7 @@ legend('ciągły','dyskretny');
 
 %%
 % symulacja w równaniach stanu
-F_C=21;
-F_H=17;
-F_D=13;
-Tau_C=100;
-Tau=40;
-h=72.25;
-T=39.25;
+model_config;
 kmax=400;
 
 [Ad, Bd, Cd, Dd] = ssdata(sysd);
