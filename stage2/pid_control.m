@@ -14,7 +14,7 @@ Tp = 1;
 iterations = 0:Tp:tmax;
 
 % Decoupling
-decoupling = false;
+decoupling = true;
 transfer_functions = get_transfer_func;
 K = [dcgain(transfer_functions(1,1)) dcgain(transfer_functions(1,2)); dcgain(transfer_functions(2,1)) dcgain(transfer_functions(2,2))];
 D12 = -K(1,2) / K(1,1);
@@ -68,7 +68,7 @@ disturbance = zeros(length(iterations), 1);
 
 if(decoupling)
     [r2_h, r1_h, r0_h] = discrete_pid_params(0.1491 , 109.0822 , 0, Tp);
-    [r2_t, r1_t, r0_t] = discrete_pid_params(0.5272, 156.1887, 0, Tp);
+    [r2_t, r1_t, r0_t] = discrete_pid_params(0.7198, 162.8030, 0, Tp);
 else
     [r2_h, r1_h, r0_h] = discrete_pid_params(0.2726 , 137.0822 , 0, Tp);
     [r2_t, r1_t, r0_t] = discrete_pid_params(0.5272, 156.1887, 0, Tp);

@@ -2,10 +2,10 @@ addpath("../");
 clear all;
 close all;
 
-lb = [0.001, 5, 0.01, 10];   % Dolne ograniczenia (K > 0, Ti > 0)
-ub = [50.0,  1000, 50.0,  1000];  % Górne ograniczenia
+lb = [0.001, 5, 0.01, 10]; 
+ub = [50.0,  1000, 50.0,  1000];  
 
-nVars = 4; % Liczba zmiennych
+nVars = 4;
 options_pso = optimoptions('particleswarm', ...
     'SwarmSize', 40, ...    % Wielkość roju (liczba cząstek)
     'MaxIterations', 20, ... % Liczba epok
@@ -13,10 +13,8 @@ options_pso = optimoptions('particleswarm', ...
     'PlotFcn', 'pswplotbestf');
 
 % Uruchomienie PSO
-fprintf('Rozpoczynam optymalizację PSO... Może to chwilę potrwać.\n');
 [best_params, min_error] = particleswarm(@(x) objective_function(x), nVars, lb, ub, options_pso);
 
-fprintf('Optymalizacja zakończona. Wyświetlanie wyników dla najlepszych nastaw.\n');
 [~, y, y_zad, u, iterations] = objective_function(best_params);
 
 figure('Name', 'Wyniki po optymalizacji PSO');
@@ -141,7 +139,6 @@ function [total_error, y, y_zad, u, iterations] = objective_function(x)
             u(k, 1) = min(max(u(k, 1), 0), 300);
             u(k, 2) = min(max(u(k, 2), 0), 300);
                     
-            % Kara za "wyparowanie" wody (H < 0)
             if y(k, 1) <= 0
                 total_error = 1e12; return;
             end
@@ -152,7 +149,6 @@ function [total_error, y, y_zad, u, iterations] = objective_function(x)
         total_error = 1.0*error_h + 1.0*error_t;
 
     catch
-        % Jeśli solver ODE padnie mimo wszystko
         total_error = 1e12;
     end
 end

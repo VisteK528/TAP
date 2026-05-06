@@ -12,7 +12,7 @@ Tp = 1;
 iterations = 0:Tp:tmax;
 
 K1z = -1;
-K2z = -0.7212;
+K2z = 0.4035;
 decoupling = true;
 transfer_functions = get_transfer_func;
 K = [dcgain(transfer_functions(1,1)) dcgain(transfer_functions(1,2)); dcgain(transfer_functions(2,1)) dcgain(transfer_functions(2,2))];
@@ -100,7 +100,7 @@ for mode = 1:2
 
         if(disturbance_comp)
             u(k, 1) = u(k, 1);
-            u(k, 2) = u(k, 2) + K1z*disturbance(k);
+            u(k, 2) = u(k, 2) + K2z*disturbance(k);
         end
 
         u(k, 1) = min(max(u(k, 1), 0), 300);
