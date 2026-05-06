@@ -2,13 +2,13 @@ addpath("../");
 clear all;
 close all;
 
-lb = [0.01, 1, 0.01, 1];   % Dolne ograniczenia (K > 0, Ti > 0)
-ub = [5.0,  50, 5.0,  50];  % Górne ograniczenia
+lb = [0.001, 5, 0.01, 10];   % Dolne ograniczenia (K > 0, Ti > 0)
+ub = [50.0,  1000, 50.0,  1000];  % Górne ograniczenia
 
 nVars = 4; % Liczba zmiennych
 options_pso = optimoptions('particleswarm', ...
-    'SwarmSize', 60, ...    % Wielkość roju (liczba cząstek)
-    'MaxIterations', 10, ... % Liczba epok
+    'SwarmSize', 40, ...    % Wielkość roju (liczba cząstek)
+    'MaxIterations', 20, ... % Liczba epok
     'Display', 'iter', ...
     'PlotFcn', 'pswplotbestf');
 
@@ -38,37 +38,47 @@ function [total_error, y, y_zad, u, iterations] = objective_function(x)
     
     F_Cin=27; T_C=25; T_H=65; T_D=29; F_C=21; F_H=17; F_D=13;
     Tau_C=100; Tau=40; C=0.15; alpha=6;
-    Hpp=72.25; Tpp=39.35; Tp = 1; tmax = 6100;
+    Hpp=72.25; Tpp=39.35; Tp = 1; tmax = 7900;
     iterations = 0:Tp:tmax;
     
     % Inicjalizacja
-    u = zeros(length(iterations), 2);
-    u(1:2, 1) = F_C; u(1:2, 2) = F_H;
-    v = zeros(length(iterations), 2);
-    v(:, 1) = F_C; v(:, 2) = F_H;
     y = ones(length(iterations), 2) .* [Hpp, Tpp];
     T_out_without_delay = ones(length(iterations), 1) * Tpp;
     e = zeros(length(iterations), 2);
     y_zad = ones(length(iterations), 2) .* [Hpp, Tpp];
 
+    % Decoupling
     decoupling = true;
+    delay_d = round(100 / Tp);
+    delay_u1 = round(Tau_C / Tp);
     transfer_functions = get_transfer_func;
     K = [dcgain(transfer_functions(1,1)) dcgain(transfer_functions(1,2)); dcgain(transfer_functions(2,1)) dcgain(transfer_functions(2,2))];
     D12 = -K(1,2) / K(1,1);
     D21 = -K(2, 1) / K(2,2);
+    M = [1, D12; D21, 1];
+    
+    u = zeros(length(iterations), 2);
+    u(:, 1) = F_C;
+    u(:, 2) = F_H;
+    
+    v = zeros(length(iterations), 2);
+    if(decoupling)
+        v_init = M \ [F_C; F_H]; 
+        v(:, 1) = v_init(1);
+        v(:, 2) = v_init(2);
+    else
+        v(:, 1) = F_C;
+        v(:, 2) = F_H;
+    end
    
-    % Jumps - height
-    y_zad(100:end, 1) = 1.2*Hpp;
-    y_zad(1200:end, 1) = 0.75*Hpp;
-    y_zad(3100:end, 1) = 1.5*Hpp;
-    y_zad(4100:end, 1) = 1.0*Hpp;
+   % Jumps - height
+    y_zad(500:end, 1) = 1.4*Hpp;
+    y_zad(3500:end, 1) = 0.7*Hpp;
+    y_zad(6000:end, 1) = 1.0*Hpp;
     
     % Jumps - temperature
-    y_zad(600:end, 2) = 1.2*Tpp;
-    y_zad(2100:end, 2) = 1.3*Tpp;
-    y_zad(3600:end, 2) = 0.75*Tpp;
-    y_zad(5000:end, 2) = 1.0*Tpp;
-
+    y_zad(2000:end, 2) = 0.8*Tpp;
+    y_zad(5000:end, 2) = 1.2*Tpp;
 
     % Obliczenie parametrów dyskretnych regulatora
     [r2_h, r1_h, r0_h] = discrete_pid_params(K_h, Ti_h, Td_h, Tp);
@@ -81,7 +91,12 @@ function [total_error, y, y_zad, u, iterations] = objective_function(x)
     try
         for k=3:length(iterations)
             % Pobranie sterowania z poprzedniego kroku
-            FC_u = u(k-1, 1); FH_u = u(k-1, 2);
+            if k > delay_u1
+                FC_u = u(k - delay_u1, 1); 
+            else
+                FC_u = F_C;
+            end
+            FH_u = u(k-1, 2);
             
             % Symulacja modelu
             t_span = ((k-1)*Tp):(k*Tp);
@@ -107,12 +122,18 @@ function [total_error, y, y_zad, u, iterations] = objective_function(x)
             e(k, 2) = y_zad(k, 2) - y(k, 2);
             v(k, 2) = r2_t*e(k-2, 2) + r1_t*e(k-1, 2) + r0_t*e(k, 2) + v(k-1, 2);
         
-            v(k, 1) = min(max(v(k, 1), 0), 300);
-            v(k, 2) = min(max(v(k, 2), 0), 300);
+            v(k, 1) = min(max(v(k, 1), -200), 300);
+            v(k, 2) = min(max(v(k, 2), -200), 300);
+
+            if k > delay_d
+                v1_delayed = v(k - delay_d, 1);
+            else
+                v1_delayed = v(1, 1); 
+            end
         
             if(decoupling)
                 u(k, 1) = v(k, 1) + D12 * v(k, 2); 
-                u(k, 2) = v(k, 2) + D21 * v(k, 1); 
+                u(k, 2) = v(k, 2) + D21 * v1_delayed; 
             else
                 u(k, :) = v(k, :);
             end
@@ -128,7 +149,7 @@ function [total_error, y, y_zad, u, iterations] = objective_function(x)
         
         error_h = sum((e(:, 1) / Hpp).^2);
         error_t = sum((e(:, 2) / Tpp).^2);
-        total_error = 1.0*error_h + 1.5*error_t;
+        total_error = 1.0*error_h + 1.0*error_t;
 
     catch
         % Jeśli solver ODE padnie mimo wszystko
