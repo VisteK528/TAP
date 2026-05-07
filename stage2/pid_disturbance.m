@@ -68,7 +68,7 @@ for mode = 1:2
         FD_u = F_D + disturbance(k);
         
         t_span = ((k-1)*Tp):(k*Tp);
-        [~, S]  = ode15s(@(t, x) linear_model(x,t,FC_u,T_C,T_H,T_D,F_C,FH_u,FD_u,Tau_C,C,alpha), t_span, [H0; T0], options);
+        [~, S]  = ode15s(@(t, x) nonlinear_model(x,t,FC_u,T_C,T_H,T_D,F_C,FH_u,FD_u,Tau_C,C,alpha), t_span, [H0; T0], options);
         y(k, 1)  = S(end, 1);
         T_out_without_delay(k)  = S(end, 2);
         if(k > delay_steps)

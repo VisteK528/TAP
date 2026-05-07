@@ -14,7 +14,7 @@ Tp = 1;
 iterations = 0:Tp:tmax;
 
 % Decoupling
-decoupling = true;
+decoupling = false;
 transfer_functions = get_transfer_func;
 K = [dcgain(transfer_functions(1,1)) dcgain(transfer_functions(1,2)); dcgain(transfer_functions(2,1)) dcgain(transfer_functions(2,2))];
 D12 = -K(1,2) / K(1,1);
@@ -87,7 +87,7 @@ for k=3:length(iterations)
     
     % Model simulation
     t_span = ((k-1)*Tp):(k*Tp);
-    [~, S]  = ode15s(@(t, x) linear_model(x,t,FC_u,T_C,T_H,T_D,F_C,FH_u,FD_u,Tau_C,C,alpha), t_span, [H0; T0], options);
+    [~, S]  = ode15s(@(t, x) nonlinear_model(x,t,FC_u,T_C,T_H,T_D,F_C,FH_u,FD_u,Tau_C,C,alpha), t_span, [H0; T0], options);
 
     y(k, 1)  = S(end, 1);   % h
     T_out_without_delay(k)  = S(end, 2); % T_out (without delay)

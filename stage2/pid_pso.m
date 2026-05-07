@@ -98,7 +98,7 @@ function [total_error, y, y_zad, u, iterations] = objective_function(x)
             
             % Symulacja modelu
             t_span = ((k-1)*Tp):(k*Tp);
-            [~, S] = ode15s(@(t, x) linear_model(x,t,FC_u,T_C,T_H,T_D,F_C,FH_u,F_D,Tau_C,C,alpha), t_span, [H0; T0], options);
+            [~, S] = ode15s(@(t, x) nonlinear_model(x,t,FC_u,T_C,T_H,T_D,F_C,FH_u,F_D,Tau_C,C,alpha), t_span, [H0; T0], options);
             
             y(k, 1) = S(end, 1);
             T_out_without_delay(k) = S(end, 2);
